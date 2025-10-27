@@ -1,7 +1,7 @@
 # Voice-to-Notion MVP Requirements
 
 ## Product Overview
-A simple web app that records voice notes, transcribes them, polishes the text with AI, and automatically creates a formatted note in Notion.
+A simple mobile app that records voice notes, transcribes them, polishes the text with AI, and automatically creates a formatted note in Notion.
 
 ## Target User
 Knowledge workers, students, and professionals who want to quickly capture thoughts and have them automatically organized in their Notion workspace.
@@ -14,11 +14,11 @@ Turn messy voice notes into polished Notion pages in seconds - no typing, no man
 ## MVP Features (Phase 1)
 
 ### 1. Voice Recording
-- **Single-page web app** with a large "Record" button
-- Click to start recording, click again to stop
+- **Mobile app screen** with a large "Record" button
+- Tap to start recording, tap again to stop
 - Maximum recording length: 5 minutes
 - Visual indicator while recording (waveform or pulsing button)
-- Browser-based recording (no mobile app needed initially)
+- Native mobile audio recording
 
 ### 2. Transcription
 - Use **OpenAI Whisper API** for accurate transcription
@@ -44,13 +44,13 @@ Turn messy voice notes into polished Notion pages in seconds - no typing, no man
   - Optional: "Source: Voice Note" tag
 
 ### 5. Simple Setup Flow
-- Landing page explains the product
+- Onboarding screen explains the product
 - "Get Started" button leads to setup:
   1. Instructions to create a Notion integration
   2. Input field for Notion API key
   3. Input field for Notion Database ID
   4. "Save & Start Recording" button
-- Store credentials in browser localStorage (not production-ready but fine for MVP)
+- Store credentials in device local storage (AsyncStorage or similar)
 
 ---
 
@@ -64,6 +64,7 @@ Turn messy voice notes into polished Notion pages in seconds - no typing, no man
 ❌ **No payment/monetization** - Free to validate demand
 ❌ **No multiple language support** - English only
 ❌ **No note categorization** - Single database destination
+❌ **No web version** - Mobile app only for MVP
 
 ---
 
@@ -86,7 +87,8 @@ Turn messy voice notes into polished Notion pages in seconds - no typing, no man
 - **Notion API** - Create pages (free)
 
 ### Hosting (Suggestions)
-- **Frontend:** Vercel, Netlify, or GitHub Pages
+- **Mobile App:** App Store and Google Play Store
+- **Landing Website:** Simple static site on Vercel, Netlify, or GitHub Pages (directs users to download app)
 - **Backend:** Vercel serverless functions, Railway, or Render
 - Total estimated cost: $5-20/month for 1000 notes
 
@@ -95,25 +97,27 @@ Turn messy voice notes into polished Notion pages in seconds - no typing, no man
 ## User Flow
 
 ```
-1. User lands on homepage
+1. User downloads app from App Store/Google Play
    ↓
-2. Clicks "Get Started"
+2. Opens app and sees onboarding screen
    ↓
-3. Follows setup instructions (Notion integration)
+3. Taps "Get Started"
    ↓
-4. Enters Notion API key + Database ID
+4. Follows setup instructions (Notion integration)
    ↓
-5. Clicks large "Record Note" button
+5. Enters Notion API key + Database ID
    ↓
-6. Records voice (visual feedback)
+6. Taps large "Record Note" button
    ↓
-7. Clicks "Stop" when done
+7. Records voice (visual feedback)
    ↓
-8. Sees "Transcribing... Polishing... Saving to Notion..."
+8. Taps "Stop" when done
    ↓
-9. Success message: "✓ Note created in Notion!" with link
+9. Sees "Transcribing... Polishing... Saving to Notion..."
    ↓
-10. Option to "Record Another Note"
+10. Success message: "✓ Note created in Notion!" with link
+   ↓
+11. Option to "Record Another Note"
 ```
 
 ---
@@ -122,7 +126,7 @@ Turn messy voice notes into polished Notion pages in seconds - no typing, no man
 
 Track these to validate product-market fit:
 
-1. **Activation Rate:** % of visitors who complete setup
+1. **Activation Rate:** % of app downloads who complete setup
 2. **Usage Frequency:** Average notes created per user per week
 3. **Retention:** % of users who return after first use
 4. **Qualitative Feedback:** Collect user testimonials
@@ -134,13 +138,13 @@ Track these to validate product-market fit:
 
 ## Timeline Estimate
 
-- **Day 1-2:** Frontend (recording UI + setup flow)
+- **Day 1-2:** Mobile app UI (recording screen + setup flow)
 - **Day 3-4:** Backend (transcription + LLM polishing)
 - **Day 5:** Notion integration
-- **Day 6:** Testing and bug fixes
-- **Day 7:** Deploy and ship!
+- **Day 6-7:** Testing and bug fixes on iOS/Android
+- **Day 8:** Build and deploy to App Store/Google Play (TestFlight/Internal Testing first)
 
-**Total: ~1 week for solo developer**
+**Total: ~1-2 weeks for solo developer** (including app store review time)
 
 ---
 
@@ -157,7 +161,7 @@ Once you have 50+ active users and positive feedback:
 ### Phase 3
 - ✅ MCP integration for intelligent placement
 - ✅ User accounts and authentication
-- ✅ Mobile app (React Native)
+- ✅ Web version (if demand exists)
 - ✅ Team workspaces
 - ✅ Multiple language support
 
@@ -210,7 +214,7 @@ Once you have 50+ active users and positive feedback:
 - ❌ Perfect UI/UX
 - ❌ Every edge case handled
 - ❌ Advanced features
-- ❌ Mobile optimization
+- ❌ App Store featured placement
 
 ---
 
@@ -239,13 +243,15 @@ Ask early users:
 
 ## Next Steps
 
-1. Clone/create repository
-2. Set up basic Express server
-3. Build recording interface
-4. Integrate OpenAI APIs
-5. Connect Notion API
-6. Deploy and test
-7. Share with 10 friends for feedback
-8. Launch publicly!
+1. Set up Expo mobile app structure
+2. Set up basic Express server (backend)
+3. Build recording interface (mobile)
+4. Integrate OpenAI APIs (backend)
+5. Connect Notion API (backend)
+6. Test on iOS and Android devices
+7. Submit to TestFlight/Google Play Internal Testing
+8. Share with 10-20 beta testers for feedback
+9. Fix critical bugs and iterate
+10. Launch publicly on App Store and Google Play!
 
 **Remember:** The goal is to validate demand, not build the perfect product. Ship fast, learn, iterate.
