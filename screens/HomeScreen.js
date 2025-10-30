@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Animated, Alert } from 'react
 import { useState, useRef, useEffect } from 'react';
 import { Audio } from 'expo-av';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [isRecording, setIsRecording] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
   const [recording, setRecording] = useState(null);
@@ -162,45 +162,14 @@ export default function HomeScreen() {
     }
   };
 
-  const playRecording = async () => {
+  const handleReview = () => {
     if (!recordingUri) {
       Alert.alert('No Recording', 'Please record something first.');
       return;
     }
 
-    try {
-      // Unload previous sound if exists
-      if (sound) {
-        await sound.unloadAsync();
-      }
-
-      // Set audio mode to speaker for louder playback
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: false,
-        shouldDuckAndroid: true,
-        playThroughEarpieceAndroid: false,
-      });
-
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri: recordingUri },
-        { shouldPlay: true, volume: 1.0 }
-      );
-
-      setSound(newSound);
-
-      // Auto-cleanup when playback finishes
-      newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          newSound.unloadAsync();
-          setSound(null);
-        }
-      });
-    } catch (err) {
-      console.error('Failed to play recording', err);
-      Alert.alert('Playback Error', 'Failed to play recording.');
-    }
+    // Navigate to playback screen with the audio URI
+    navigation.navigate('Playback', { audioUri: recordingUri });
   };
 
   const formatTime = (seconds) => {
@@ -282,17 +251,17 @@ export default function HomeScreen() {
         </Text>
       </View>
 
-      {/* Playback Button (Bottom Right Corner) */}
+      {/* Review Button (Bottom) */}
       {recordingUri && (
-        <TouchableOpacity
-          style={styles.playbackButton}
-          onPress={playRecording}
-          activeOpacity={0.8}
-        >
-          <View style={styles.playIcon}>
-            <View style={styles.playTriangle} />
-          </View>
-        </TouchableOpacity>
+        <View style={styles.reviewButtonContainer}>
+          <TouchableOpacity
+            style={styles.reviewButton}
+            onPress={handleReview}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.reviewButtonText}>Review & Send</Text>
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );
@@ -423,15 +392,19 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     textAlign: 'center',
   },
-  playbackButton: {
+  reviewButtonContainer: {
     position: 'absolute',
-    bottom: 40,
-    right: 24,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+    backgroundColor: '#F8F9FB',
+  },
+  reviewButton: {
     backgroundColor: '#8B5CF6',
-    justifyContent: 'center',
+    paddingVertical: 18,
+    borderRadius: 16,
     alignItems: 'center',
     shadowColor: '#8B5CF6',
     shadowOffset: {
@@ -442,21 +415,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 6,
   },
-  playIcon: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 3,
-  },
-  playTriangle: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 16,
-    borderTopWidth: 10,
-    borderBottomWidth: 10,
-    borderLeftColor: '#FFFFFF',
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
+  reviewButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
   },
 });
